@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import format from 'date-fns/format';
 
 import useFetch from '../../hooks/useFetch';
+import { useAppContext } from '../App/Context';
 
 interface Product {
   product_id: number;
@@ -26,15 +27,62 @@ interface Invoice {
 
 const url = 'http://localhost:3001/api/invoices';
 
+interface Column {
+  id: keyof Invoice;
+  title: string;
+}
+
+const defaultColumns: Column[] = [
+  {
+    id: 'id',
+    title: 'ID',
+  },
+  {
+    id: 'date',
+    title: 'Date',
+  },
+  {
+    id: 'customer_name',
+    title: 'Customer Name',
+  },
+  {
+    id: 'region',
+    title: 'Region',
+  },
+];
+
+const revenueColumns = [
+  {
+    id: 'total_invoice',
+    title: 'Total Invoice',
+  },
+];
+
+const marginColumns = [
+  {
+    id: 'total_margin',
+    title: 'Total Margin',
+  },
+];
+
 // id, date, costumer name, region, invoice total (or total margin, depending on switcher value).
 
 export default function Invoices() {
   const { data, loading, error } = useFetch<Invoice[]>(url);
+  const {
+    state: { valueType },
+  } = useAppContext();
 
   const latestInvoices = useMemo(
     () => data?.sort((a, b) => (b.date > a.date ? 1 : -1)).slice(0, 15),
     [data],
   );
+
+  const columns = useMemo(() => {
+    const valueColumn =
+      valueType === 'revenues' ? revenueColumns : marginColumns;
+    return [...defaultColumns, ...valueColumn];
+  }, [valueType]);
 
   if (loading) return <p>Loading...!</p>;
 
@@ -44,34 +92,23 @@ export default function Invoices() {
     <table>
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Date</th>
-          <th>Customer Name</th>
-          <th>Region</th>
-          <th>Total Invoice</th>
-          <th>Total Margin</th>
+          {columns.map(({ id, title }) => (
+            <th key={id}>{title}</th>
+          ))}
         </tr>
       </thead>
       <tbody>
-        {latestInvoices?.map(
-          ({
-            id,
-            customer_name,
-            region,
-            date,
-            total_invoice,
-            total_margin,
-          }) => (
-            <tr key={id}>
-              <td>{id}</td>
-              <td>{customer_name}</td>
-              <td>{region}</td>
-              <td>{format(new Date(date), 'dd-MMM-yyyy')}</td>
-              <td>{total_invoice}</td>
-              <td>{total_margin}</td>
-            </tr>
-          ),
-        )}
+        {latestInvoices?.map((invoice) => (
+          <tr key={invoice.id}>
+            {columns.map(({ id }) => (
+              <td key={`${id}-${invoice.id}`}>
+                {id === 'date'
+                  ? format(new Date(invoice[id]), 'dd-MMM-yyyy')
+                  : invoice[id as keyof Invoice]}
+              </td>
+            ))}
+          </tr>
+        ))}
       </tbody>
     </table>
   );
