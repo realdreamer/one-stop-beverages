@@ -1,4 +1,5 @@
 :root {
   --bg-main: #333;
-  --text-main: #fff;
+  --text-primary: #fff;
+  --text-secondary: #666;
 }
