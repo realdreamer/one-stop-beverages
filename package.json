@@ -15,22 +15,43 @@
     "web-vitals": "^1.0.1"
   },
   "devDependencies": {
+    "@commitlint/cli": "^13.1.0",
+    "@commitlint/config-conventional": "^13.1.0",
     "@types/jest": "^26.0.15",
     "@types/node": "^12.0.0",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
-    "json-server": "^0.16.3"
+    "commitizen": "^4.2.4",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-airbnb-typescript": "^14.0.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "husky": "^7.0.2",
+    "json-server": "^0.16.3",
+    "lint-staged": "^11.1.2",
+    "prettier": "^2.3.2"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "server": "json-server -p 3001 --fks _id --snapshots ./server/dbs  -d 200 --routes ./server/routes.json --read-only --watch server/generator.js"
+    "server": "json-server -p 3001 --fks _id --snapshots ./server/dbs  -d 200 --routes ./server/routes.json --read-only --watch server/generator.js",
+    "lint": "eslint . --ext .ts,.tsx src --color",
+    "lint:fix": "eslint . --ext .ts,.tsx --fix",
+    "format": "prettier --write src/**/*.{ts,tsx,css}",
+    "lint-staged": "lint-staged",
+    "commit": "cz",
+    "prepare": "husky install"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "git add"
+    ],
+    "*.{ts,tsx,css}": [
+      "yarn run format",
+      "git add"
     ]
   },
   "browserslist": {
@@ -44,5 +65,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }
