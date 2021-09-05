@@ -1,0 +1,15 @@
+@import url('../../colors.css');
+
+.app-header {
+  background-color: var(--bg-main);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-main);
+}
+
+.app-title {
+  font-size: 2.25rem;
+  padding: 1.25rem;
+}
