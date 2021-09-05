@@ -2,6 +2,8 @@ import './index.css';
 
 import Invoices from '../Invoices';
 import BestCustomers from '../BestCustomers';
+import ProductCategories from '../ProductCategoriesChart';
+import InvoiceRevenuesChart from '../InvoiceRevenuesChart';
 
 function App() {
   return (
@@ -11,6 +13,8 @@ function App() {
       </header>
       <Invoices />
       <BestCustomers />
+      <ProductCategories />
+      <InvoiceRevenuesChart />
     </div>
   );
 }
