@@ -1,10 +1,6 @@
-import React from 'react';
-
-import { useReducer } from 'react';
-
-import reducer, { initialState } from './reducer';
-
 import RadioGroupFilter from '../RadioGroupFilter';
+
+import { useAppContext } from '../App/Context';
 
 const periodSelectionoptions = [
   {
@@ -29,39 +25,19 @@ const valueTypeSelectionOptions = [
 ];
 
 export default function FiltersBar() {
-  const [state, dispatch] = useReducer(reducer, initialState);
-
-  function handlePeriodSelection(event: React.ChangeEvent<HTMLInputElement>) {
-    dispatch({
-      type: 'period',
-      payload: {
-        value: event?.target.value,
-      },
-    });
-  }
-
-  function handleValueTypeSelection(
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) {
-    dispatch({
-      type: 'valueType',
-      payload: {
-        value: event?.target.value,
-      },
-    });
-  }
+  const { state, onCreateFilterChange } = useAppContext();
 
   return (
     <div className="filters-bar">
       <RadioGroupFilter
         value={state.period}
-        onSelection={handlePeriodSelection}
+        onSelection={onCreateFilterChange('period')}
         title="Period Selector"
         options={periodSelectionoptions}
       />
       <RadioGroupFilter
         value={state.valueType}
-        onSelection={handleValueTypeSelection}
+        onSelection={onCreateFilterChange('valueType')}
         title="Value Type Selector"
         options={valueTypeSelectionOptions}
       />
