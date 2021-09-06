@@ -2,6 +2,7 @@ import React from 'react';
 
 import { FilterValues } from '../../types';
 
+import './index.css';
 export interface Option {
   value: any;
   label: string;
@@ -24,8 +25,9 @@ export default function RadioGroup({
   onSelection,
   selectedValue,
 }: Props) {
+  const classNames = `radio-group ${className}`;
   return (
-    <div id={id} role="radiogroup" className={className}>
+    <div id={id} role="radiogroup" className={classNames}>
       {options.map(({ value, label }, index) => {
         const inputId = `radiogroup-${name}-${index}`;
         return (
@@ -39,7 +41,7 @@ export default function RadioGroup({
               onChange={onSelection}
               checked={selectedValue === value}
             />
-            <label className="radio-label" htmlFor={inputId}>
+            <label htmlFor={inputId}>
               <span className="radio-faux">
                 <div className="radio-circle" />
               </span>

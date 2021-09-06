@@ -1,0 +1,19 @@
+.radio-group-filter {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 0.75rem;
+  align-items: center;
+  border-bottom: 1px solid #dbdbdb;
+  margin-bottom: 0.75rem;
+}
+
+.radio-group-filter:last-child {
+  border-bottom: 0;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.radio-group-filter h4 {
+  font-size: 1rem;
+  padding-bottom: 0.5rem;
+}

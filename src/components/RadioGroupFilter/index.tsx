@@ -3,6 +3,7 @@ import { FilterValues } from '../../types';
 
 import RadioGroup, { Option } from '../RadioGroup';
 
+import './index.css';
 interface Props {
   title: string;
   value: FilterValues;
@@ -26,7 +27,7 @@ export default function RadioGroupFilter({
 }: Props) {
   return (
     <div className="radio-group-filter">
-      <h2>{title}</h2>
+      <h4>{title}</h4>
       <RadioGroup
         options={options}
         name={slugify(title)}

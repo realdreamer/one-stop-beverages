@@ -1,0 +1,17 @@
+.radio-group {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.radio {
+  display: flex;
+  align-items: center;
+  padding-bottom: 0.25rem;
+}
+
+.radio-label {
+  font-size: 1rem;
+  padding: 0 0.75rem;
+  text-align: left;
+  display: inline-flex;
+}

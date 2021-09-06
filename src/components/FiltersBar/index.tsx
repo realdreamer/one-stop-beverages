@@ -3,6 +3,8 @@ import RadioGroupFilter from '../RadioGroupFilter';
 import { useAppContext } from '../App/Context';
 import { ValueTypeFilter, PeriodSelectionFilter } from '../../types';
 
+import './index.css';
+
 const periodSelectionoptions = [
   {
     value: PeriodSelectionFilter.weekly,
