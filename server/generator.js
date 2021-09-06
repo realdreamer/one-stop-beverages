@@ -127,6 +127,7 @@ function calculateCostumerRevenues(invoices) {
                 total_revenue: invoice.total_invoice,
                 total_margin: invoice.total_margin,
                 invoices_count: 1,
+                region: invoice.region,
             }
         } else {
             data[invoice.customer_name].total_revenue += invoice.total_invoice
