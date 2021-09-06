@@ -13,7 +13,7 @@ export default function BarChart({ data, keys, indexBy }: Props) {
       data={data}
       keys={keys}
       indexBy={indexBy}
-      margin={{ top: 50, right: 130, bottom: 50, left: 100 }}
+      margin={{ top: 24, right: 24, bottom: 100, left: 100 }}
       padding={0.3}
       valueScale={{ type: 'linear' }}
       indexScale={{ type: 'band', round: true }}
@@ -28,7 +28,7 @@ export default function BarChart({ data, keys, indexBy }: Props) {
         tickRotation: 0,
         legend: 'Product Category',
         legendPosition: 'middle',
-        legendOffset: 32,
+        legendOffset: 40,
       }}
       axisLeft={{
         tickSize: 5,
@@ -43,16 +43,13 @@ export default function BarChart({ data, keys, indexBy }: Props) {
       labelTextColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
       legends={[
         {
-          dataFrom: 'keys',
-          anchor: 'bottom-right',
-          direction: 'column',
-          justify: false,
-          translateX: 120,
-          translateY: 0,
-          itemsSpacing: 2,
-          itemWidth: 100,
+          anchor: 'bottom',
+          direction: 'row',
           itemHeight: 20,
-          itemDirection: 'left-to-right',
+          itemWidth: 80,
+          translateY: 80,
+          dataFrom: 'keys',
+          translateX: 0,
           itemOpacity: 0.85,
           symbolSize: 20,
           effects: [
