@@ -5,6 +5,7 @@ interface State<T> {
   data?: T;
   error?: any | null;
   loading?: Boolean;
+  refetch: (url: string, options?: RequestInit) => void;
 }
 
 export default function useFetch<T = unknown>(
@@ -14,32 +15,42 @@ export default function useFetch<T = unknown>(
   const [data, setData] = useState();
   const [error, setError] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [callRefetch, setCallRefetch] = useState(false);
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
 
-  // abort controller
-  const abortContoller = new AbortController();
+  const fetchData = async (fetchUrl: string) => {
+    try {
+      const { data: responseData } = await axios.get(fetchUrl, {
+        cancelToken: source.token,
+      });
+      setData(responseData);
+      setLoading(false);
+    } catch (exception) {
+      setError(exception);
+      setLoading(false);
+    }
+    !callRefetch && setCallRefetch(true);
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { data: responseData } = await axios.get(url);
-        setData(responseData);
-        setLoading(false);
-      } catch (exception) {
-        setError(exception);
-        setLoading(false);
-      }
-    };
-    fetchData();
-
+    fetchData(url);
     return () => {
-      abortContoller.abort();
+      source.cancel();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  function refetch(refetchUrl: string) {
+    if (!callRefetch) return;
+    setLoading(true);
+    fetchData(refetchUrl);
+  }
 
   return {
     data,
     error,
     loading,
+    refetch,
   };
 }
