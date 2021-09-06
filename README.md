@@ -1,7 +1,9 @@
-# Frontend home assignment
+# Frontend home assignment - One Stop Beverages
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+### Install dependencies
+Before starting up the application please do `yarn install`
 ## Available Scripts
 
 In the project directory, you can run:
@@ -38,8 +40,13 @@ of the front-end.
 You can read more about [json-server in the official documentation](./server/DOCUMENTATION.md), and see what are the
 [available routes for the API here](./server/ROUTES.md)
 
-## Learn More
+## TODO
+- [ ] Move API URL to environment variables
+- [ ] Few business logic could be move into separate hooks
+- [ ] Styling for the loader/error/empty state
+- [ ] CSS custom radio button
+- [ ] Common types
+- [ ] CSS variables (Usually I prefer to do it with colors and spacing with design tokens but because of time constraint went with direct usage
+- [ ] Fetch data for components which are in the viewport
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+This also could be the good things to pair for the next round.
