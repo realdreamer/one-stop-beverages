@@ -15,6 +15,7 @@ interface Customer {
 interface Column {
   id: keyof Customer;
   title: string;
+  className?: string;
 }
 
 const defaultColumns: Column[] = [
@@ -32,17 +33,19 @@ const defaultColumns: Column[] = [
   },
 ];
 
-const revenueColumns = [
+const revenueColumns: Column[] = [
   {
     id: 'total_revenue',
     title: 'Total Revenue',
+    className: 'text-align-right',
   },
 ];
 
-const marginColumns = [
+const marginColumns: Column[] = [
   {
     id: 'total_margin',
     title: 'Total Margin',
+    className: 'text-align-right',
   },
 ];
 
@@ -63,30 +66,50 @@ export default function BestCustomers() {
     return [...defaultColumns, ...valueColumn];
   }, [valueType]);
 
+  const enhanceData = useMemo(
+    () =>
+      data?.map((customer) => ({
+        ...customer,
+        total_margin: customer.total_margin.toFixed(2),
+        total_revenue: customer.total_revenue.toFixed(2),
+      })),
+    [data],
+  );
+
   if (loading) return <p>Loading...!</p>;
 
   if (error) return <p>Something went wrong..!</p>;
 
   return (
-    <table>
-      <thead>
-        <tr>
-          {columns.map(({ id, title }) => (
-            <th key={id}>{title}</th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {data?.map((customer) => (
-          <tr key={customer.customer_id}>
-            {columns.map(({ id }) => (
-              <td key={`${id}-${customer.customer_id}`}>
-                {customer[id as keyof Customer]}
-              </td>
+    <section className="tile best-customers-section">
+      <h3 className="tile-header">Best Customers</h3>
+      <div className="tile-content">
+        <table className="table">
+          <thead>
+            <tr>
+              {columns.map(({ id, title }) => (
+                <th key={id} className="table-head">
+                  {title}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {enhanceData?.map((customer) => (
+              <tr key={customer.customer_id}>
+                {columns.map(({ id, className }) => (
+                  <td
+                    key={`${id}-${customer.customer_id}`}
+                    className={`${className} table-cell`}
+                  >
+                    {customer[id as keyof Customer]}
+                  </td>
+                ))}
+              </tr>
             ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
+          </tbody>
+        </table>
+      </div>
+    </section>
   );
 }
