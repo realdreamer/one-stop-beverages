@@ -1,4 +1,7 @@
+import { useMemo } from 'react';
+
 import useFetch from '../../hooks/useFetch';
+import { useAppContext } from '../App/Context';
 
 interface Customer {
   customer_id: number;
@@ -6,7 +9,42 @@ interface Customer {
   total_revenue: number;
   total_margin: number;
   invoices_count: number;
+  region: string;
 }
+
+interface Column {
+  id: keyof Customer;
+  title: string;
+}
+
+const defaultColumns: Column[] = [
+  {
+    id: 'customer_name',
+    title: 'Customer Name',
+  },
+  {
+    id: 'region',
+    title: 'Region',
+  },
+  {
+    id: 'invoices_count',
+    title: 'Total Invoices',
+  },
+];
+
+const revenueColumns = [
+  {
+    id: 'total_revenue',
+    title: 'Total Revenue',
+  },
+];
+
+const marginColumns = [
+  {
+    id: 'total_margin',
+    title: 'Total Margin',
+  },
+];
 
 // with their name, their region, the number of invoices at their
 // names and the total revenue(or total margin, depending on switcher value).
@@ -15,6 +53,15 @@ const url = 'http://localhost:3001/api/customers/revenues';
 
 export default function BestCustomers() {
   const { data, loading, error } = useFetch<Customer[]>(url);
+  const {
+    state: { valueType },
+  } = useAppContext();
+
+  const columns = useMemo(() => {
+    const valueColumn =
+      valueType === 'revenues' ? revenueColumns : marginColumns;
+    return [...defaultColumns, ...valueColumn];
+  }, [valueType]);
 
   if (loading) return <p>Loading...!</p>;
 
@@ -24,31 +71,21 @@ export default function BestCustomers() {
     <table>
       <thead>
         <tr>
-          <th>Customer ID</th>
-          <th>Date</th>
-          <th>Customer Name</th>
-          <th>Region</th>
-          <th>Total Invoice</th>
+          {columns.map(({ id, title }) => (
+            <th key={id}>{title}</th>
+          ))}
         </tr>
       </thead>
       <tbody>
-        {data?.map(
-          ({
-            customer_id,
-            customer_name,
-            total_revenue,
-            total_margin,
-            invoices_count,
-          }) => (
-            <tr key={customer_id}>
-              <td>{customer_id}</td>
-              <td>{customer_name}</td>
-              <td>{total_revenue}</td>
-              <td>{total_margin}</td>
-              <td>{invoices_count}</td>
-            </tr>
-          ),
-        )}
+        {data?.map((customer) => (
+          <tr key={customer.customer_id}>
+            {columns.map(({ id }) => (
+              <td key={`${id}-${customer.customer_id}`}>
+                {customer[id as keyof Customer]}
+              </td>
+            ))}
+          </tr>
+        ))}
       </tbody>
     </table>
   );
