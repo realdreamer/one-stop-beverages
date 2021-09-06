@@ -5,15 +5,29 @@
   align-items: center;
   border-bottom: 1px solid #dbdbdb;
   margin-bottom: 0.75rem;
+  color: #31353f;
 }
 
 .radio-group-filter:last-child {
   border-bottom: 0;
   margin-bottom: 0;
   padding-bottom: 0;
+  border-right: 0;
 }
 
 .radio-group-filter h4 {
+  color: #0f1013;
   font-size: 1rem;
   padding-bottom: 0.5rem;
+}
+
+@media only screen and (min-width: 600px) {
+  .radio-group-filter {
+    padding-bottom: 0;
+    align-items: center;
+    border-bottom: 0;
+    margin-bottom: 0;
+    flex-basis: 50%;
+    border-right: 1px solid #dbdbdb;
+  }
 }
