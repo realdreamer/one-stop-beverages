@@ -3,8 +3,14 @@
 .app-header {
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
+  border-bottom: 1px solid #a9a9a9;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #f9f9f9;
+  z-index: 10;
 }
 
 .app-title-section {
@@ -16,6 +22,6 @@
 }
 
 .app-title {
-  font-size: 2.25rem;
-  padding: 1.25rem;
+  font-size: 1.75rem;
+  padding: 1.2rem 0.75rem;
 }
