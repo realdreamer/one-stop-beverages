@@ -1,20 +1,25 @@
+import { ValueTypeFilter, PeriodSelectionFilter } from '../../types';
 export interface FiltersState {
-  period: string;
-  valueType: string;
+  period: PeriodSelectionFilter;
+  valueType: ValueTypeFilter;
 }
 
 export const initialState = {
-  period: 'monthly',
-  valueType: 'revenues',
+  period: PeriodSelectionFilter.monthly,
+  valueType: ValueTypeFilter.revenues,
 };
 
 interface Payload {
-  value: string;
+  value: PeriodSelectionFilter;
+}
+
+interface ValueTypePayload {
+  value: ValueTypeFilter;
 }
 
 type Action =
   | { type: 'period'; payload: Payload }
-  | { type: 'valueType'; payload: Payload };
+  | { type: 'valueType'; payload: ValueTypePayload };
 
 export default function reducer(
   state: FiltersState = initialState,

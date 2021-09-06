@@ -1,10 +1,11 @@
 import React from 'react';
+import { FilterValues } from '../../types';
 
 import RadioGroup, { Option } from '../RadioGroup';
 
 interface Props {
   title: string;
-  value: string;
+  value: FilterValues;
   options: Option[];
   onSelection: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }

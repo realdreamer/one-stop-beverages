@@ -1,7 +1,9 @@
 import React from 'react';
 
+import { FilterValues } from '../../types';
+
 export interface Option {
-  value: string;
+  value: any;
   label: string;
 }
 
@@ -11,7 +13,7 @@ interface Props {
   name?: string;
   options: Option[];
   onSelection?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  selectedValue: string;
+  selectedValue: FilterValues;
 }
 
 export default function RadioGroup({

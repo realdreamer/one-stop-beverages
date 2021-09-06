@@ -19,7 +19,7 @@ export default function useFilters(): UseFiltersState {
       dispatch({
         type: eventType,
         payload: {
-          value: event?.target.value,
+          value: event?.target.value as any,
         },
       });
     };

@@ -1,25 +1,26 @@
 import RadioGroupFilter from '../RadioGroupFilter';
 
 import { useAppContext } from '../App/Context';
+import { ValueTypeFilter, PeriodSelectionFilter } from '../../types';
 
 const periodSelectionoptions = [
   {
-    value: 'weekly',
+    value: PeriodSelectionFilter.weekly,
     label: 'Weekly',
   },
   {
-    value: 'monthly',
+    value: PeriodSelectionFilter.monthly,
     label: 'Monthly',
   },
 ];
 
 const valueTypeSelectionOptions = [
   {
-    value: 'revenues',
+    value: ValueTypeFilter.revenues,
     label: 'Revenues',
   },
   {
-    value: 'margins',
+    value: ValueTypeFilter.margins,
     label: 'Margins',
   },
 ];
