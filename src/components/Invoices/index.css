@@ -1,0 +1,12 @@
+.invoice-id-cell {
+  width: 13%;
+}
+
+.invoice-date-cell {
+  width: 16%;
+}
+
+.invoice-revenue-cell,
+.invoice-margin-cell {
+  width: 22%;
+}

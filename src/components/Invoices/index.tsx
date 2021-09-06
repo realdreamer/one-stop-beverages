@@ -4,6 +4,8 @@ import format from 'date-fns/format';
 import useFetch from '../../hooks/useFetch';
 import { useAppContext } from '../App/Context';
 
+import './index.css';
+
 interface Product {
   product_id: number;
   product_name: string;
@@ -30,18 +32,20 @@ const url = 'http://localhost:3001/api/invoices';
 interface Column {
   id: keyof Invoice;
   title: string;
-  columnClassName?: string;
   headerClassName?: string;
+  className?: string;
 }
 
 const defaultColumns: Column[] = [
   {
     id: 'id',
     title: 'ID',
+    headerClassName: 'invoice-id-cell',
   },
   {
     id: 'date',
     title: 'Date',
+    headerClassName: 'invoice-date-cell',
   },
   {
     id: 'customer_name',
@@ -53,17 +57,21 @@ const defaultColumns: Column[] = [
   },
 ];
 
-const revenueColumns = [
+const revenueColumns: Column[] = [
   {
     id: 'total_invoice',
     title: 'Total Invoice',
+    headerClassName: 'invoice-revenue-cell',
+    className: 'text-align-right',
   },
 ];
 
-const marginColumns = [
+const marginColumns: Column[] = [
   {
     id: 'total_margin',
     title: 'Total Margin',
+    headerClassName: 'invoice-margin-cell',
+    className: 'text-align-right',
   },
 ];
 
@@ -107,8 +115,8 @@ export default function Invoices() {
         <table className="table">
           <thead>
             <tr>
-              {columns.map(({ id, title }) => (
-                <th key={id} className="table-head">
+              {columns.map(({ id, title, headerClassName = '' }) => (
+                <th key={id} className={`table-head ${headerClassName}`}>
                   {title}
                 </th>
               ))}
@@ -117,8 +125,11 @@ export default function Invoices() {
           <tbody>
             {latestInvoices?.map((invoice) => (
               <tr key={invoice.id}>
-                {columns.map(({ id }) => (
-                  <td key={`${id}-${invoice.id}`} className="table-cell">
+                {columns.map(({ id, className = '' }) => (
+                  <td
+                    key={`${id}-${invoice.id}`}
+                    className={`table-cell ${className}`}
+                  >
                     {invoice[id as keyof Invoice]}
                   </td>
                 ))}
