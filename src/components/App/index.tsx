@@ -17,8 +17,10 @@ function App() {
       <div className="app">
         <Header />
         <main className="main">
-          <Invoices />
-          <BestCustomers />
+          <div className="tile-table-section">
+            <Invoices />
+            <BestCustomers />
+          </div>
           <ProductCategories />
           <InvoiceRevenuesChart />
         </main>
