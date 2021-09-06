@@ -5,6 +5,7 @@ import useFetch from '../../hooks/useFetch';
 import { useAppContext } from '../App/Context';
 
 import './index.css';
+import TileStateFeedback from '../TileStateFeedback';
 
 interface Product {
   product_id: number;
@@ -78,7 +79,7 @@ const marginColumns: Column[] = [
 // id, date, costumer name, region, invoice total (or total margin, depending on switcher value).
 
 export default function Invoices() {
-  const { data, loading, error } = useFetch<Invoice[]>(url);
+  const { data = [], loading, error } = useFetch<Invoice[]>(url);
   const {
     state: { valueType },
   } = useAppContext();
@@ -86,7 +87,7 @@ export default function Invoices() {
   const latestInvoices = useMemo(
     () =>
       data
-        ?.sort((a, b) => (b.date > a.date ? 1 : -1))
+        .sort((a, b) => (b.date > a.date ? 1 : -1))
         .slice(0, 15)
         .map((invoice) => ({
           ...invoice,
@@ -103,40 +104,42 @@ export default function Invoices() {
     return [...defaultColumns, ...valueColumn];
   }, [valueType]);
 
-  if (loading) return <p>Loading...!</p>;
-
-  if (error) return <p>Something went wrong..!</p>;
-
   return (
     <section className="tile latest-invoices-section">
       <h3 className="tile-header">Latest Invoices</h3>
       <p className="tile-description">List of the 15 latestinvoices by date</p>
       <div className="tile-content">
-        <table className="table">
-          <thead>
-            <tr>
-              {columns.map(({ id, title, headerClassName = '' }) => (
-                <th key={id} className={`table-head ${headerClassName}`}>
-                  {title}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {latestInvoices?.map((invoice) => (
-              <tr key={invoice.id}>
-                {columns.map(({ id, className = '' }) => (
-                  <td
-                    key={`${id}-${invoice.id}`}
-                    className={`table-cell ${className}`}
-                  >
-                    {invoice[id as keyof Invoice]}
-                  </td>
+        <TileStateFeedback
+          loading={loading}
+          error={error}
+          empty={!latestInvoices.length}
+        >
+          <table className="table">
+            <thead>
+              <tr>
+                {columns.map(({ id, title, headerClassName = '' }) => (
+                  <th key={id} className={`table-head ${headerClassName}`}>
+                    {title}
+                  </th>
                 ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {latestInvoices?.map((invoice) => (
+                <tr key={invoice.id}>
+                  {columns.map(({ id, className = '' }) => (
+                    <td
+                      key={`${id}-${invoice.id}`}
+                      className={`table-cell ${className}`}
+                    >
+                      {invoice[id as keyof Invoice]}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </TileStateFeedback>
       </div>
     </section>
   );

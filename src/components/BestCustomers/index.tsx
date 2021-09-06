@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 
 import useFetch from '../../hooks/useFetch';
 import { useAppContext } from '../App/Context';
+import TileStateFeedback from '../TileStateFeedback';
 
 interface Customer {
   customer_id: number;
@@ -55,7 +56,7 @@ const marginColumns: Column[] = [
 const url = 'http://localhost:3001/api/customers/revenues';
 
 export default function BestCustomers() {
-  const { data, loading, error } = useFetch<Customer[]>(url);
+  const { data = [], loading, error } = useFetch<Customer[]>(url);
   const {
     state: { valueType },
   } = useAppContext();
@@ -68,7 +69,7 @@ export default function BestCustomers() {
 
   const enhanceData = useMemo(
     () =>
-      data?.map((customer) => ({
+      data.map((customer) => ({
         ...customer,
         total_margin: customer.total_margin.toFixed(2),
         total_revenue: customer.total_revenue.toFixed(2),
@@ -76,39 +77,41 @@ export default function BestCustomers() {
     [data],
   );
 
-  if (loading) return <p>Loading...!</p>;
-
-  if (error) return <p>Something went wrong..!</p>;
-
   return (
     <section className="tile best-customers-section">
       <h3 className="tile-header">Best Customers</h3>
       <div className="tile-content">
-        <table className="table">
-          <thead>
-            <tr>
-              {columns.map(({ id, title }) => (
-                <th key={id} className="table-head">
-                  {title}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {enhanceData?.map((customer) => (
-              <tr key={customer.customer_id}>
-                {columns.map(({ id, className }) => (
-                  <td
-                    key={`${id}-${customer.customer_id}`}
-                    className={`${className} table-cell`}
-                  >
-                    {customer[id as keyof Customer]}
-                  </td>
+        <TileStateFeedback
+          loading={loading}
+          error={error}
+          empty={!enhanceData.length}
+        >
+          <table className="table">
+            <thead>
+              <tr>
+                {columns.map(({ id, title }) => (
+                  <th key={id} className="table-head">
+                    {title}
+                  </th>
                 ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {enhanceData?.map((customer) => (
+                <tr key={customer.customer_id}>
+                  {columns.map(({ id, className }) => (
+                    <td
+                      key={`${id}-${customer.customer_id}`}
+                      className={`${className} table-cell`}
+                    >
+                      {customer[id as keyof Customer]}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </TileStateFeedback>
       </div>
     </section>
   );

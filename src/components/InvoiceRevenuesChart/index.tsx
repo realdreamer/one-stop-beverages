@@ -5,6 +5,7 @@ import { useAppContext } from '../App/Context';
 import { PeriodSelectionFilter, ValueTypeFilter } from '../../types';
 import LineChart from '../LineChart';
 import useWindowSize from '../../hooks/useWindowSize';
+import TileStateFeedback from '../TileStateFeedback';
 
 interface Revenue {
   week?: string;
@@ -69,8 +70,6 @@ export default function InvoiceRevenuesChart() {
       ? 36
       : totalDataPoints;
 
-  console.log(weeklyDataPointsLimit);
-
   const spliceChartData =
     selectedPeriod === 'month'
       ? enhanceDataForChart
@@ -78,15 +77,6 @@ export default function InvoiceRevenuesChart() {
           totalDataPoints - weeklyDataPointsLimit,
           totalDataPoints,
         );
-
-  console.log(spliceChartData);
-
-  if (loading) return <p>Loading...!</p>;
-
-  if (error) return <p>Something went wrong..!</p>;
-
-  if (!enhanceDataForChart || enhanceDataForChart.length === 0)
-    return <p>No Data</p>;
 
   return (
     <section className="chart-tile-section">
@@ -96,20 +86,26 @@ export default function InvoiceRevenuesChart() {
           <p>Displaying only the most recent {weeklyDataPointsLimit} weeks</p>
         )}
         <div className="tile-content">
-          <div className="chart">
-            <LineChart
-              data={[
-                {
-                  id: `${valueType.toUpperCase()} FOR ${selectedPeriod.toUpperCase()}`,
-                  data: spliceChartData,
-                },
-              ]}
-              legend={{
-                bottom: selectedPeriod.toUpperCase(),
-                left: valueType.toUpperCase(),
-              }}
-            />
-          </div>
+          <TileStateFeedback
+            loading={loading}
+            error={error}
+            empty={spliceChartData.length === 0}
+          >
+            <div className="chart">
+              <LineChart
+                data={[
+                  {
+                    id: `${valueType.toUpperCase()} FOR ${selectedPeriod.toUpperCase()}`,
+                    data: spliceChartData,
+                  },
+                ]}
+                legend={{
+                  bottom: selectedPeriod.toUpperCase(),
+                  left: valueType.toUpperCase(),
+                }}
+              />
+            </div>
+          </TileStateFeedback>
         </div>
       </div>
     </section>

@@ -56,6 +56,9 @@
   border: 1px solid #eaebee;
   box-shadow: 0px 2px 4px rgb(0 0 0 / 15%);
   margin-bottom: 1rem;
+  min-height: 500px;
+  display: flex;
+  flex-direction: column;
 }
 
 .tile-header {
@@ -72,6 +75,10 @@
 
 .tile-content {
   margin: 0 -1rem;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  display: flex;
 }
 
 .chart {
