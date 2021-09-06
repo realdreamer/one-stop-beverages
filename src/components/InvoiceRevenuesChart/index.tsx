@@ -1,7 +1,9 @@
-import { useMemo } from 'react';
-import { ResponsiveLine, Serie } from '@nivo/line';
+import { useEffect, useMemo } from 'react';
 
 import useFetch from '../../hooks/useFetch';
+import { useAppContext } from '../App/Context';
+import { PeriodSelectionFilter, ValueTypeFilter } from '../../types';
+import LineChart from '../LineChart';
 
 interface Revenue {
   week?: string;
@@ -12,16 +14,30 @@ interface Revenue {
   total_margin: number;
   total_revenue: number;
 }
-
-const url = 'http://localhost:3001/api/revenues/monthly';
-
 interface SeriesData {
   x: string;
   y: number;
 }
 
+const BASE_URL = 'http://localhost:3001/api/revenues';
+
 export default function InvoiceRevenuesChart() {
-  const { data = [], loading, error } = useFetch<Revenue[]>(url);
+  const {
+    state: { period, valueType },
+  } = useAppContext();
+  const url = `${BASE_URL}/${period}`;
+  const { data = [], loading, error, refetch } = useFetch<Revenue[]>(url);
+
+  useEffect(() => {
+    refetch && refetch(url);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [url]);
+
+  const selectedPeriod =
+    period === PeriodSelectionFilter.monthly ? 'month' : 'week';
+
+  const selectedValueType =
+    valueType === ValueTypeFilter.margins ? 'total_margin' : 'total_revenue';
 
   const sortDataByDate = useMemo(
     () => data?.sort((a, b) => (a.start_date > b.start_date ? 1 : -1)),
@@ -33,12 +49,12 @@ export default function InvoiceRevenuesChart() {
 
     return sortDataByDate.reduce((prev: SeriesData[], next, index) => {
       prev.push({
-        x: next?.month || next?.week || 'Month',
-        y: (prev[index - 1]?.y || 0) + next.total_revenue,
+        x: next?.[selectedPeriod] || '',
+        y: (prev[index - 1]?.y || 0) + next[selectedValueType],
       });
       return prev;
     }, []);
-  }, [sortDataByDate]);
+  }, [sortDataByDate, selectedPeriod, selectedValueType]);
 
   if (loading) return <p>Loading...!</p>;
 
@@ -47,77 +63,19 @@ export default function InvoiceRevenuesChart() {
   if (!enhanceDataForChart || enhanceDataForChart.length === 0)
     return <p>No Data</p>;
 
-  const chartData: Serie[] = [
-    {
-      id: 'hello',
-      data: enhanceDataForChart,
-    },
-  ];
-
   return (
     <div style={{ width: '100%', height: '500px' }}>
-      <ResponsiveLine
-        data={chartData}
-        margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
-        xScale={{ type: 'point' }}
-        yScale={{
-          type: 'linear',
-          min: 'auto',
-          max: 'auto',
-          stacked: true,
-          reverse: false,
-        }}
-        yFormat=" >-.2f"
-        axisTop={null}
-        axisRight={null}
-        axisBottom={{
-          tickSize: 5,
-          tickPadding: 5,
-          tickRotation: 0,
-          legend: 'transportation',
-          legendOffset: 36,
-          legendPosition: 'middle',
-        }}
-        axisLeft={{
-          tickSize: 5,
-          tickPadding: 5,
-          tickRotation: 0,
-          legend: 'count',
-          legendOffset: -40,
-          legendPosition: 'middle',
-        }}
-        pointSize={10}
-        pointColor={{ theme: 'background' }}
-        pointBorderWidth={2}
-        pointBorderColor={{ from: 'serieColor' }}
-        pointLabelYOffset={-12}
-        useMesh={true}
-        legends={[
+      <LineChart
+        data={[
           {
-            anchor: 'bottom-right',
-            direction: 'column',
-            justify: false,
-            translateX: 100,
-            translateY: 0,
-            itemsSpacing: 0,
-            itemDirection: 'left-to-right',
-            itemWidth: 80,
-            itemHeight: 20,
-            itemOpacity: 0.75,
-            symbolSize: 12,
-            symbolShape: 'circle',
-            symbolBorderColor: 'rgba(0, 0, 0, .5)',
-            effects: [
-              {
-                on: 'hover',
-                style: {
-                  itemBackground: 'rgba(0, 0, 0, .03)',
-                  itemOpacity: 1,
-                },
-              },
-            ],
+            id: `${valueType.toUpperCase()} FOR ${selectedPeriod.toUpperCase()}`,
+            data: enhanceDataForChart,
           },
         ]}
+        legend={{
+          bottom: selectedPeriod.toUpperCase(),
+          left: valueType.toUpperCase(),
+        }}
       />
     </div>
   );
