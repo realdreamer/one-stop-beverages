@@ -16,7 +16,7 @@ function App() {
     <AppContext.Provider value={{ state, onCreateFilterChange }}>
       <div className="app">
         <Header />
-        <main>
+        <main className="main">
           <Invoices />
           <BestCustomers />
           <ProductCategories />
