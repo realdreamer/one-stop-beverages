@@ -14,7 +14,7 @@ export default function LineChart({ data, legend }: Props) {
   return (
     <ResponsiveLine
       data={data}
-      margin={{ top: 24, right: 100, bottom: 100, left: 100 }}
+      margin={{ top: 24, right: 24, bottom: 150, left: 100 }}
       xScale={{ type: 'point' }}
       yScale={{
         type: 'linear',
@@ -23,6 +23,7 @@ export default function LineChart({ data, legend }: Props) {
         stacked: true,
         reverse: false,
       }}
+      colors="#98cfd8"
       yFormat=" >-.2f"
       axisTop={null}
       axisRight={null}
@@ -31,7 +32,7 @@ export default function LineChart({ data, legend }: Props) {
         tickPadding: 5,
         tickRotation: 90,
         legend: legend.bottom,
-        legendOffset: 36,
+        legendOffset: 85,
         legendPosition: 'middle',
       }}
       axisLeft={{
@@ -53,9 +54,9 @@ export default function LineChart({ data, legend }: Props) {
           anchor: 'bottom',
           direction: 'row',
           translateX: 0,
-          translateY: 80,
+          translateY: 120,
           itemsSpacing: 0.85,
-          itemWidth: 94,
+          itemWidth: 150,
           itemHeight: 20,
           itemOpacity: 0.75,
           symbolSize: 12,

@@ -4,6 +4,7 @@ import useFetch from '../../hooks/useFetch';
 import { useAppContext } from '../App/Context';
 import { PeriodSelectionFilter, ValueTypeFilter } from '../../types';
 import LineChart from '../LineChart';
+import useWindowSize from '../../hooks/useWindowSize';
 
 interface Revenue {
   week?: string;
@@ -27,6 +28,7 @@ export default function InvoiceRevenuesChart() {
   } = useAppContext();
   const url = `${BASE_URL}/${period}`;
   const { data = [], loading, error, refetch } = useFetch<Revenue[]>(url);
+  const { width = 0 } = useWindowSize();
 
   useEffect(() => {
     refetch && refetch(url);
@@ -56,6 +58,29 @@ export default function InvoiceRevenuesChart() {
     }, []);
   }, [sortDataByDate, selectedPeriod, selectedValueType]);
 
+  const totalDataPoints = enhanceDataForChart.length;
+
+  const weeklyDataPointsLimit =
+    width < 480
+      ? 12
+      : width >= 480 && width < 768
+      ? 20
+      : width >= 768 && width < 1023
+      ? 36
+      : totalDataPoints;
+
+  console.log(weeklyDataPointsLimit);
+
+  const spliceChartData =
+    selectedPeriod === 'month'
+      ? enhanceDataForChart
+      : enhanceDataForChart.slice(
+          totalDataPoints - weeklyDataPointsLimit,
+          totalDataPoints,
+        );
+
+  console.log(spliceChartData);
+
   if (loading) return <p>Loading...!</p>;
 
   if (error) return <p>Something went wrong..!</p>;
@@ -64,19 +89,29 @@ export default function InvoiceRevenuesChart() {
     return <p>No Data</p>;
 
   return (
-    <div style={{ width: '100%', height: '500px' }}>
-      <LineChart
-        data={[
-          {
-            id: `${valueType.toUpperCase()} FOR ${selectedPeriod.toUpperCase()}`,
-            data: enhanceDataForChart,
-          },
-        ]}
-        legend={{
-          bottom: selectedPeriod.toUpperCase(),
-          left: valueType.toUpperCase(),
-        }}
-      />
-    </div>
+    <section className="chart-tile-section">
+      <div className="tile">
+        <h3 className="tile-header">{`Cumulative invoice ${valueType}`}</h3>
+        {selectedPeriod === 'week' && (
+          <p>Displaying only the most recent {weeklyDataPointsLimit} weeks</p>
+        )}
+        <div className="tile-content">
+          <div className="chart">
+            <LineChart
+              data={[
+                {
+                  id: `${valueType.toUpperCase()} FOR ${selectedPeriod.toUpperCase()}`,
+                  data: spliceChartData,
+                },
+              ]}
+              legend={{
+                bottom: selectedPeriod.toUpperCase(),
+                left: valueType.toUpperCase(),
+              }}
+            />
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }

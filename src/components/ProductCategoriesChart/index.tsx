@@ -5,6 +5,8 @@ import BarChart from '../BarChart';
 import { COST_VALUE_MAPPER } from '../../consts';
 import { useAppContext } from '../App/Context';
 
+import { useMemo } from 'react';
+
 export interface CategoryRevenue extends BarDatum {
   category_name: string;
   total_revenue: number;
@@ -20,19 +22,37 @@ export default function ProductCategories() {
 
   const { data, loading, error } = useFetch<CategoryRevenue[]>(url);
 
+  const productCategoriesData = useMemo(
+    () =>
+      data?.map((productCategory) => ({
+        ...productCategory,
+        total_margin: parseFloat(productCategory.total_margin.toFixed(2)),
+        total_revenue: parseFloat(productCategory.total_revenue.toFixed(2)),
+      })),
+    [data],
+  );
+
   if (loading) return <p>Loading...!</p>;
 
   if (error) return <p>Something went wrong..!</p>;
 
-  if (!data || data.length === 0) return <p>No Data</p>;
+  if (!productCategoriesData || productCategoriesData.length === 0)
+    return <p>No Data</p>;
 
   return (
-    <div style={{ width: '100%', height: '500px' }}>
-      <BarChart
-        data={data}
-        keys={[COST_VALUE_MAPPER[valueType]]}
-        indexBy="category_name"
-      />
-    </div>
+    <section className="chart-tile-section">
+      <div className="tile">
+        <h3 className="tile-header">{`Total ${valueType} per products categories`}</h3>
+        <div className="tile-content">
+          <div className="chart">
+            <BarChart
+              data={productCategoriesData}
+              keys={[COST_VALUE_MAPPER[valueType]]}
+              indexBy="category_name"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }

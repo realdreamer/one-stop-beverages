@@ -17,7 +17,7 @@ export default function BarChart({ data, keys, indexBy }: Props) {
       padding={0.3}
       valueScale={{ type: 'linear' }}
       indexScale={{ type: 'band', round: true }}
-      colors={{ scheme: 'nivo' }}
+      colors="#c3dee5"
       layout="horizontal"
       borderColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
       axisTop={null}

@@ -1,5 +1,8 @@
 .main {
   padding-top: 220px;
+  width: 100%;
+  max-width: 1920px;
+  margin: 0 auto;
 }
 
 .table {
@@ -44,7 +47,7 @@
   text-align: right;
 }
 
-.tex-align-left {
+.text-align-left {
   text-align: left;
 }
 
@@ -69,6 +72,11 @@
 
 .tile-content {
   margin: 0 -1rem;
+}
+
+.chart {
+  width: 100%;
+  height: 500px;
 }
 
 @media only screen and (min-width: 600px) {
@@ -108,5 +116,17 @@
     flex-grow: 1;
     height: 100%;
     overflow: auto;
+  }
+
+  .chart-tile-section {
+    padding: 1rem;
+  }
+
+  .chart-tile-section .tile {
+    max-height: initial;
+  }
+
+  .chart-tile-section .tile-content {
+    overflow: initial;
   }
 }
