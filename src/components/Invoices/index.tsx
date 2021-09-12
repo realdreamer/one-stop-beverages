@@ -28,7 +28,7 @@ interface Invoice {
   region: string;
 }
 
-const url = 'http://localhost:3001/api/invoices';
+const url = `${process.env.REACT_APP_API_BASE_URL}/api/invoices`;
 
 interface Column {
   id: keyof Invoice;

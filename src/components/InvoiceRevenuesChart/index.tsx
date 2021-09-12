@@ -1,13 +1,14 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 
 import useFetch from '../../hooks/useFetch';
 import { useAppContext } from '../App/Context';
-import { PeriodSelectionFilter, ValueTypeFilter } from '../../types';
+// import { PeriodSelectionFilter, ValueTypeFilter } from '../../types';
 import LineChart from '../LineChart';
-import useWindowSize from '../../hooks/useWindowSize';
+// import useWindowSize from '../../hooks/useWindowSize';
 import TileStateFeedback from '../TileStateFeedback';
+import useChartData from './useChartData';
 
-interface Revenue {
+export interface Revenue {
   week?: string;
   month?: string;
   start_date: Date;
@@ -16,12 +17,12 @@ interface Revenue {
   total_margin: number;
   total_revenue: number;
 }
-interface SeriesData {
-  x: string;
-  y: number;
-}
+// interface SeriesData {
+//   x: string;
+//   y: number;
+// }
 
-const BASE_URL = 'http://localhost:3001/api/revenues';
+const BASE_URL = `${process.env.REACT_APP_API_BASE_URL}/api/revenues`;
 
 export default function InvoiceRevenuesChart() {
   const {
@@ -29,54 +30,17 @@ export default function InvoiceRevenuesChart() {
   } = useAppContext();
   const url = `${BASE_URL}/${period}`;
   const { data = [], loading, error, refetch } = useFetch<Revenue[]>(url);
-  const { width = 0 } = useWindowSize();
 
   useEffect(() => {
     refetch && refetch(url);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [url]);
 
-  const selectedPeriod =
-    period === PeriodSelectionFilter.monthly ? 'month' : 'week';
-
-  const selectedValueType =
-    valueType === ValueTypeFilter.margins ? 'total_margin' : 'total_revenue';
-
-  const sortDataByDate = useMemo(
-    () => data?.sort((a, b) => (a.start_date > b.start_date ? 1 : -1)),
-    [data],
-  );
-
-  const enhanceDataForChart = useMemo((): SeriesData[] => {
-    if (!sortDataByDate) return [];
-
-    return sortDataByDate.reduce((prev: SeriesData[], next, index) => {
-      prev.push({
-        x: next?.[selectedPeriod] || '',
-        y: (prev[index - 1]?.y || 0) + next[selectedValueType],
-      });
-      return prev;
-    }, []);
-  }, [sortDataByDate, selectedPeriod, selectedValueType]);
-
-  const totalDataPoints = enhanceDataForChart.length;
-
-  const weeklyDataPointsLimit =
-    width < 480
-      ? 12
-      : width >= 480 && width < 768
-      ? 20
-      : width >= 768 && width < 1023
-      ? 36
-      : totalDataPoints;
-
-  const spliceChartData =
-    selectedPeriod === 'month'
-      ? enhanceDataForChart
-      : enhanceDataForChart.slice(
-          totalDataPoints - weeklyDataPointsLimit,
-          totalDataPoints,
-        );
+  const {
+    data: spliceChartData,
+    selectedPeriod,
+    weeklyDataPointsLimit,
+  } = useChartData(data, period, valueType);
 
   return (
     <section className="chart-tile-section">

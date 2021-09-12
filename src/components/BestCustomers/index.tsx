@@ -53,7 +53,7 @@ const marginColumns: Column[] = [
 // with their name, their region, the number of invoices at their
 // names and the total revenue(or total margin, depending on switcher value).
 
-const url = 'http://localhost:3001/api/customers/revenues';
+const url = `${process.env.REACT_APP_API_BASE_URL}/api/customers/revenues`;
 
 export default function BestCustomers() {
   const { data = [], loading, error } = useFetch<Customer[]>(url);
